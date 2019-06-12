@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7E48956222B13187005A3916 /* CircleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E48956122B13187005A3916 /* CircleImage.swift */; };
+		7E48956422B132EE005A3916 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E48956322B132EE005A3916 /* MapView.swift */; };
 		7EC82B9A22B108880099553F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC82B9922B108880099553F /* AppDelegate.swift */; };
 		7EC82B9C22B108880099553F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC82B9B22B108880099553F /* SceneDelegate.swift */; };
 		7EC82B9E22B108880099553F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC82B9D22B108880099553F /* ContentView.swift */; };
@@ -37,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		7E48956122B13187005A3916 /* CircleImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImage.swift; sourceTree = "<group>"; };
+		7E48956322B132EE005A3916 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7EC82B9622B108880099553F /* Landmarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Landmarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EC82B9922B108880099553F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7EC82B9B22B108880099553F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				7EC82B9B22B108880099553F /* SceneDelegate.swift */,
 				7EC82B9D22B108880099553F /* ContentView.swift */,
 				7E48956122B13187005A3916 /* CircleImage.swift */,
+				7E48956322B132EE005A3916 /* MapView.swift */,
 				7EC82B9F22B1088A0099553F /* Assets.xcassets */,
 				7EC82BA422B1088A0099553F /* LaunchScreen.storyboard */,
 				7EC82BA722B1088A0099553F /* Info.plist */,
@@ -272,6 +275,7 @@
 			files = (
 				7EC82B9A22B108880099553F /* AppDelegate.swift in Sources */,
 				7E48956222B13187005A3916 /* CircleImage.swift in Sources */,
+				7E48956422B132EE005A3916 /* MapView.swift in Sources */,
 				7EC82B9C22B108880099553F /* SceneDelegate.swift in Sources */,
 				7EC82B9E22B108880099553F /* ContentView.swift in Sources */,
 			);
