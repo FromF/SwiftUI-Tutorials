@@ -9,19 +9,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var image: UIImage?
-    @State var takePhoto: Bool = false
-    
+    @ObservedObject private var avFoundationVM = AVFoundationVM()
+
     var body: some View {
         VStack {
-            if image == nil {
+            if avFoundationVM.image == nil {
                 Spacer()
                 
                 ZStack(alignment: .bottom) {
-                    AVFoundationView(image: $image, takePhoto: $takePhoto)
+                    CALayerView(caLayer: avFoundationVM.previewLayer)
                     
                     Button(action: {
-                        self.takePhoto.toggle()
+                        self.avFoundationVM.takePhoto()
                     }) {
                         Image(systemName: "camera.circle.fill")
                         .renderingMode(.original)
@@ -29,6 +28,10 @@ struct ContentView: View {
                         .frame(width: 80, height: 80, alignment: .center)
                     }
                     .padding(.bottom, 100.0)
+                }.onAppear {
+                    self.avFoundationVM.startSession()
+                }.onDisappear {
+                    self.avFoundationVM.endSession()
                 }
                 
                 Spacer()
@@ -37,7 +40,7 @@ struct ContentView: View {
                     VStack {
                         Spacer()
                         
-                        Image(uiImage: image!)
+                        Image(uiImage: avFoundationVM.image!)
                         .resizable()
                         .scaledToFill()
                         .aspectRatio(contentMode: .fit)
@@ -45,7 +48,7 @@ struct ContentView: View {
                         Spacer()
                     }
                     Button(action: {
-                        self.image = nil
+                        self.avFoundationVM.image = nil
                     }) {
                             Image(systemName: "xmark.circle.fill")
                             .renderingMode(.original)
@@ -56,8 +59,6 @@ struct ContentView: View {
                     }
                     .frame(width: 80, height: 80, alignment: .center)
                 }
-                
-                
             }
         }
     }
@@ -67,7 +68,6 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ContentView()
-            ContentView(image: UIImage(systemName: "rectangle.stack.person.crop"), takePhoto: false)
         }
     }
 }
