@@ -15,6 +15,10 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
     @Published var image: UIImage?
     ///プレビュー用レイヤー
     var previewLayer:CALayer!
+    ///顔の位置
+    @Published var faceRect: CGRect = CGRect.zero
+    ///顔認識した元画像のサイズ
+    @Published var imageSize: CGSize = CGSize.zero
     
     ///撮影開始フラグ
     private var _takePhoto:Bool = false
@@ -22,6 +26,9 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
     private let captureSession = AVCaptureSession()
     ///撮影デバイス
     private var capturepDevice:AVCaptureDevice!
+    ///顔認識
+    ///CIDetectorAccuracyHighだと高精度（使った感じは遠距離による判定の精度）だが処理が遅くなる
+    private let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options:[CIDetectorAccuracy: CIDetectorAccuracyLow] )!
     
     override init() {
         super.init()
@@ -85,6 +92,21 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
             if let image = getImageFromSampleBuffer(buffer: sampleBuffer) {
                 DispatchQueue.main.async {
                     self.image = image
+                }
+            }
+        } else {
+            if let image = getImageFromSampleBuffer(buffer: sampleBuffer) ,
+                let ciImage = CIImage(image: image) {
+                let faces = self.detector.features(in: ciImage)
+                if let face = faces.first {
+                    DispatchQueue.main.async {
+                        // 座標変換
+                        self.faceRect = face.bounds
+                        // UIKitは左上に原点があるが、CoreImageは左下に原点があるので揃える
+                        self.faceRect.origin.y = ciImage.extent.size.height - self.faceRect.origin.y - self.faceRect.size.height
+                        // 顔認識に使った画像サイズを保持する
+                        self.imageSize = ciImage.extent.size
+                    }
                 }
             }
         }

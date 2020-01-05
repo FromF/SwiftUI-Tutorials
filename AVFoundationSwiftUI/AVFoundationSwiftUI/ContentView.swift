@@ -17,7 +17,7 @@ struct ContentView: View {
                 Spacer()
                 
                 ZStack(alignment: .bottom) {
-                    CALayerView(caLayer: avFoundationVM.previewLayer)
+                    CALayerView(caLayer: avFoundationVM.previewLayer, faceRect: $avFoundationVM.faceRect, imageSize: $avFoundationVM.imageSize)
                     
                     Button(action: {
                         self.avFoundationVM.takePhoto()
