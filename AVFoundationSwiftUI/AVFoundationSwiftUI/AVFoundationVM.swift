@@ -10,19 +10,19 @@ import UIKit
 import Combine
 import AVFoundation
 
-class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, ObservableObject {
+class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCapturePhotoCaptureDelegate, ObservableObject {
     ///撮影した画像
     @Published var image: UIImage?
     ///プレビュー用レイヤー
     var previewLayer:CALayer!
     
-    ///撮影開始フラグ
-    private var _takePhoto:Bool = false
     ///セッション
     private let captureSession = AVCaptureSession()
     ///撮影デバイス
     private var capturepDevice:AVCaptureDevice!
-    
+    ///静止画撮影
+    private var stillOutout: AVCapturePhotoOutput?
+
     override init() {
         super.init()
         
@@ -31,7 +31,13 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
     }
     
     func takePhoto() {
-        _takePhoto = true
+        // 撮影設定
+        let settingsForMonitoring = AVCapturePhotoSettings()
+        settingsForMonitoring.flashMode = .off  // フラッシュのモード
+        settingsForMonitoring.isHighResolutionPhotoEnabled = false  // 最高解像度で撮影するか否か
+
+        // シャッターを切る
+        stillOutout?.capturePhoto(with: settingsForMonitoring, delegate: self)
     }
     
     private func prepareCamera() {
@@ -53,13 +59,18 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
         
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         self.previewLayer = previewLayer
-//        captureSession.startRunning()
         
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String:kCVPixelFormatType_32BGRA]
         
         if captureSession.canAddOutput(dataOutput) {
             captureSession.addOutput(dataOutput)
+        }
+        
+        stillOutout = AVCapturePhotoOutput()
+        
+        if captureSession.canAddOutput(stillOutout!) {
+            captureSession.addOutput(stillOutout!)
         }
         
         captureSession.commitConfiguration()
@@ -80,13 +91,18 @@ class AVFoundationVM: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, Ob
     
     // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if _takePhoto {
-            _takePhoto = false
-            if let image = getImageFromSampleBuffer(buffer: sampleBuffer) {
-                DispatchQueue.main.async {
-                    self.image = image
-                }
-            }
+//        if let image = getImageFromSampleBuffer(buffer: sampleBuffer) {
+//            DispatchQueue.main.async {
+//                self.image = image
+//            }
+//        }
+    }
+    
+    // MARK: - AVCapturePhotoCaptureDelegate
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let photoData = photo.fileDataRepresentation() {
+            //UIImageに変換
+            image = UIImage(data: photoData)
         }
     }
     
